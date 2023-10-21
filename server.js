@@ -6,6 +6,8 @@ import { config } from "dotenv";
 
 import { sequelize } from "./model/index.js";
 
+const { default: index } = await import("./routes/index.js");
+
 config();
 
 const app = express();
@@ -21,6 +23,8 @@ app.get("/", function (req, res) {
   res.send("Hello World");
 });
 
-app.listen(3000, () => {
+app.use("/api/v1", index);
+
+app.listen(8080, () => {
   console.log("server is running on port http://localhost:3000");
 });
