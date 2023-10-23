@@ -19,7 +19,7 @@ const registerSchema = z.object({
 authRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log(req.body, "body");
     // todo use becrpt to compare password
 
     const user = await User.findOne({
@@ -38,14 +38,28 @@ authRouter.post("/login", async (req, res) => {
 
     //  we can also add more details to the user
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "2d",
     });
 
-    return res.status(200).json({ error: false, user, token });
+    const expiry = req.body?.remember
+      ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
+      : {};
+
+    return res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        signed: true,
+        ...expiry,
+      })
+      .json({
+        error: false,
+        user: user,
+        token: token,
+        message: "Login successful",
+      });
   } catch (err) {
     return res.status(500).json({ error: true, message: err.message });
   }
@@ -53,6 +67,7 @@ authRouter.post("/login", async (req, res) => {
 
 authRouter.post("/register", async (req, res) => {
   try {
+    console.log(req.signedCookies, "cookies");
     const registerData = registerSchema.safeParse(req.body);
 
     if (!registerData.success) {
@@ -89,16 +104,41 @@ authRouter.post("/register", async (req, res) => {
     //   we can also add more details to the user
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-    });
+    const expiry = req.body?.remember
+      ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
+      : {};
 
-    return res.status(200).json({ error: false, user, token });
+    return res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: false,
+        signed: true,
+        ...expiry,
+      })
+      .json({
+        error: false,
+        user: user,
+        token: token,
+        message: "Login successful",
+      });
   } catch (err) {
     console.log(err.message, "err");
     return res.status(500).json({ error: true, message: err.message });
   }
+});
+
+authRouter.get(
+  "/check",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.status(200).json({ error: false, message: "Logged in" });
+  }
+);
+
+authRouter.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ error: false, message: "Logged out" });
 });
 
 export default authRouter;

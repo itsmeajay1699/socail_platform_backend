@@ -12,12 +12,17 @@ import passport from "passport";
 
 import User from "./model/schema/accounts/User.js";
 
+import cookieParser from "cookie-parser";
+
 import "./auth/passport_jwt.js";
+
+import cors from "cors";
 
 config();
 
 const app = express();
 
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
 
 // sequelize.sync({ force: true }).then(() => {
@@ -27,6 +32,13 @@ app.use(bodyParser.json());
 // passport middleware
 
 app.use(passport.initialize());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 // ------------------------------
 
