@@ -12,28 +12,44 @@ const registerSchema = z.object({
   username: z.string().min(4).max(20),
   password: z.string().min(8).max(100),
   email: z.string().email(),
-  role: z.number().min(1).max(3),
+  confirmPassword: z.string().min(8).max(100),
   // 1: user 2: admin 3: don
 });
 
-authRouter.post(
-  "/login",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    try {
-      const { username, password, email, role } = req.user;
+authRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-      const token = jwt.sign(
-        { username, password, email, role },
-        process.env.JWT_SECRET
-      );
+    // todo use becrpt to compare password
 
-      return res.status(200).json({ error: false, user: req.user, token });
-    } catch (err) {
-      return res.status(500).json({ error: true, message: err.message });
+    const user = await User.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: true, message: "invalid email" });
     }
+
+    if (user.password !== password) {
+      return res.status(401).json({ error: true, message: "invalid password" });
+    }
+
+    //  we can also add more details to the user
+
+    const token = jwt.sign({ email }, process.env.JWT_SECRET);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    return res.status(200).json({ error: false, user, token });
+  } catch (err) {
+    return res.status(500).json({ error: true, message: err.message });
   }
-);
+});
 
 authRouter.post("/register", async (req, res) => {
   try {
@@ -68,16 +84,19 @@ authRouter.post("/register", async (req, res) => {
       username,
       password,
       email,
-      role,
+      role: 1,
     });
+    //   we can also add more details to the user
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
 
-    const token = jwt.sign(
-      { username, password, email, role },
-      process.env.JWT_SECRET
-    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+    });
 
     return res.status(200).json({ error: false, user, token });
   } catch (err) {
+    console.log(err.message, "err");
     return res.status(500).json({ error: true, message: err.message });
   }
 });
