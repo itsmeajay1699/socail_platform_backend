@@ -24,7 +24,7 @@ const User = sequelize.define("user_account", {
     unique: true,
   },
   role: {
-    type: Sequelize.STRING,
+    type: Sequelize.INTEGER,
     allowNull: false,
   },
   profile_photo: {
@@ -34,11 +34,11 @@ const User = sequelize.define("user_account", {
   },
   full_name: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   phone_number: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   bio: {
     type: Sequelize.STRING,
