@@ -38,9 +38,7 @@ authRouter.post("/login", async (req, res) => {
 
     //  we can also add more details to the user
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "2d",
-    });
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
 
     const expiry = req.body?.remember
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
@@ -50,8 +48,6 @@ authRouter.post("/login", async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        signed: true,
         ...expiry,
       })
       .json({
