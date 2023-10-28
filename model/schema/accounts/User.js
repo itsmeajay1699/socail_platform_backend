@@ -7,11 +7,13 @@ const User = sequelize.define("user_account", {
     autoIncrement: true,
   },
   username: {
+    // form
     type: Sequelize.STRING,
     allowNull: false,
     unique: true,
   },
   password: {
+    // form
     type: Sequelize.STRING,
     allowNull: false,
     validate: {
@@ -19,28 +21,33 @@ const User = sequelize.define("user_account", {
     },
   },
   email: {
+    // form
     type: Sequelize.STRING,
     allowNull: false,
     unique: true,
   },
   role: {
+    // form default 1 - user
     type: Sequelize.INTEGER,
     allowNull: false,
   },
   profile_photo: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING, // default but can be updated later
     allowNull: false,
     defaultValue: "https://i.imgur.com/6VBx3io.png",
   },
   full_name: {
+    // profile form
     type: Sequelize.STRING,
     allowNull: true,
   },
   phone_number: {
+    // profile form
     type: Sequelize.STRING,
     allowNull: true,
   },
   bio: {
+    // profile form
     type: Sequelize.STRING,
     allowNull: true,
   },

@@ -38,7 +38,7 @@ authRouter.post("/login", async (req, res) => {
 
     //  we can also add more details to the user
 
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
     const expiry = req.body?.remember
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
@@ -97,8 +97,7 @@ authRouter.post("/register", async (req, res) => {
       email,
       role: 1,
     });
-    //   we can also add more details to the user
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
     const expiry = req.body?.remember
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
@@ -108,8 +107,6 @@ authRouter.post("/register", async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        signed: true,
         ...expiry,
       })
       .json({
@@ -118,6 +115,27 @@ authRouter.post("/register", async (req, res) => {
         token: token,
         message: "Login successful",
       });
+
+    // const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+
+    // const expiry = req.body?.remember
+    //   ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
+    //   : {};
+
+    // return res
+    //   .status(200)
+    //   .cookie("token", token, {
+    //     httpOnly: true,
+    //     secure: false,
+    //     signed: true,
+    //     ...expiry,
+    //   })
+    //   .json({
+    //     error: false,
+    //     user: user,
+    //     token: token,
+    //     message: "Login successful",
+    //   });
   } catch (err) {
     console.log(err.message, "err");
     return res.status(500).json({ error: true, message: err.message });

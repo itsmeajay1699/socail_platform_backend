@@ -8,7 +8,7 @@ const cookieExtractor = (req) => {
 
 const tokenFromHeaderAuthorization = (req) => {
   const authorization = req?.headers?.authorization;
-  console.log(authorization)
+  console.log(authorization);
   if (authorization) {
     const token = authorization.split(" ")[1];
     return token;
@@ -22,8 +22,7 @@ const opts = {
   jwtFromRequest: (req) => {
     const tokenFromHeader = tokenFromHeaderAuthorization(req);
     const tokenFromCookie = cookieExtractor(req);
-    console.log(tokenFromHeader,"tokenFromHeader")
-    return tokenFromHeader 
+    return tokenFromHeader || tokenFromCookie;
   },
   secretOrKey: process.env.JWT_SECRET,
 };

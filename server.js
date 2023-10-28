@@ -12,6 +12,8 @@ import passport from "passport";
 
 import User from "./model/schema/accounts/User.js";
 
+import FriendRequest from "./model/schema/relations/FriendRequest.js";
+
 import cookieParser from "cookie-parser";
 
 import "./auth/passport_jwt.js";
