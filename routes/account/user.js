@@ -55,6 +55,23 @@ router.patch(
       return res.status(401).json({ error: true, message: "invalid email" });
     }
 
+    if (req.body.username) {
+      const checkUserWithUsername = await User.findOne({
+        where: {
+          username: req.body.username,
+          id: {
+            [Sequelize.Op.not]: req.user.id,
+          },
+        },
+      });
+
+      if (checkUserWithUsername) {
+        return res
+          .status(401)
+          .json({ error: true, message: "Username already exists" });
+      }
+    }
+
     const checkUserWithEmail = await User.findOne({
       where: {
         email: req.body.email,
@@ -127,5 +144,26 @@ router.post("/verify", async (req, res) => {
     decoded,
   });
 });
+
+router.get(
+  "/me",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: true, message: "invalid email" });
+    }
+
+    return res.status(200).json({
+      error: false,
+      user,
+    });
+  }
+);
 
 export default router;

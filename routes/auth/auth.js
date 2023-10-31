@@ -77,7 +77,7 @@ authRouter.post("/register", async (req, res) => {
         [Sequelize.Op.or]: [{ username: username }, { email: email }],
       },
     });
-
+    console.log(userExists, "userExists");
     if (userExists) {
       if (userExists.username == username) {
         return res
@@ -146,11 +146,14 @@ authRouter.get(
   "/check",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.status(200).json({ error: false, message: "Logged in" });
+    res
+      .status(200)
+      .json({ error: false, message: "Logged in", user: req.user });
   }
 );
 
 authRouter.get("/logout", (req, res) => {
+  console.log(res)
   res.clearCookie("token");
   res.status(200).json({ error: false, message: "Logged out" });
 });

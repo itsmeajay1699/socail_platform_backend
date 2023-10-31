@@ -14,7 +14,11 @@ import User from "./model/schema/accounts/User.js";
 
 import FriendRequest from "./model/schema/relations/FriendRequest.js";
 
+import Post from "./model/schema/media/Post.js";
+
 import cookieParser from "cookie-parser";
+
+import PublicPost from "./model/schema/media/PublicPost.js";
 
 import "./auth/passport_jwt.js";
 
