@@ -15,12 +15,10 @@ const registerSchema = z.object({
   confirmPassword: z.string().min(8).max(100),
   // 1: user 2: admin 3: don
 });
-
 authRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log(req.body, "body");
-    // todo use becrpt to compare password
 
     const user = await User.findOne({
       where: {
@@ -29,14 +27,16 @@ authRouter.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ error: true, message: "invalid email" });
+      return res.status(401).json({ error: true, message: "Invalid email" });
     }
 
-    if (user.password !== password) {
-      return res.status(401).json({ error: true, message: "invalid password" });
-    }
+    // Use bcrypt to compare passwords securely
+    // Assuming user.password contains the hashed password
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    //  we can also add more details to the user
+    if (!passwordMatch) {
+      return res.status(401).json({ error: true, message: "Invalid password" });
+    }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
@@ -44,25 +44,75 @@ authRouter.post("/login", async (req, res) => {
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
       : {};
 
-    return res
-      .status(200)
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true, // Set for HTTPS environments
-        path: "/",
-        domain: "localhost", // Remove the protocol part
-        ...expiry,
-      })
-      .json({
-        error: false,
-        user: user,
-        token: token,
-        message: "Login successful",
-      });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+      domain: "localhost",
+      ...expiry,
+    });
+
+    console.log("Token set in cookie:", token);
+
+    return res.status(200).json({
+      error: false,
+      user: user,
+      token: token,
+      message: "Login successful",
+    });
   } catch (err) {
+    console.error("Error in login:", err);
     return res.status(500).json({ error: true, message: err.message });
   }
 });
+
+// authRouter.post("/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     console.log(req.body, "body");
+//     // todo use becrpt to compare password
+
+//     const user = await User.findOne({
+//       where: {
+//         email,
+//       },
+//     });
+
+//     if (!user) {
+//       return res.status(401).json({ error: true, message: "invalid email" });
+//     }
+
+//     if (user.password !== password) {
+//       return res.status(401).json({ error: true, message: "invalid password" });
+//     }
+
+//     //  we can also add more details to the user
+
+//     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+
+//     const expiry = req.body?.remember
+//       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
+//       : {};
+
+//     return res
+//       .status(200)
+//       .cookie("token", token, {
+//         httpOnly: true,
+//         secure: true, // Set for HTTPS environments
+//         path: "/",
+//         domain: "localhost", // Remove the protocol part
+//         ...expiry,
+//       })
+//       .json({
+//         error: false,
+//         user: user,
+//         token: token,
+//         message: "Login successful",
+//       });
+//   } catch (err) {
+//     return res.status(500).json({ error: true, message: err.message });
+//   }
+// });
 
 authRouter.post("/register", async (req, res) => {
   try {
