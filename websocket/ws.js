@@ -5,6 +5,7 @@ console.log(activeConnections);
 export function setupWebSocketServer(server) {
   const wss = new websocket.server({
     httpServer: server,
+    autoAcceptConnections: false, 
   });
 
   wss.on("request", (req) => {
