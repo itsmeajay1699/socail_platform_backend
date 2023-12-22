@@ -44,13 +44,12 @@ authRouter.post("/login", async (req, res) => {
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
       : {};
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      path: "/",
-      domain: "localhost",
-      ...expiry,
-    });
+      res.cookie("token", token, {
+        httpOnly: true,
+        path: "/",
+        ...expiry,
+      });
+  
 
     console.log("Token set in cookie:", token);
   
