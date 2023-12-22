@@ -50,7 +50,7 @@ authRouter.post("/login", async (req, res) => {
         httpOnly: true,
         secure: true, // Set for HTTPS environments
         path: "/",
-        domain: "https://localhost:3000",
+        domain: "localhost", // Remove the protocol part
         ...expiry,
       })
       .json({
@@ -112,7 +112,7 @@ authRouter.post("/register", async (req, res) => {
         httpOnly: true,
         secure: true, // Set for HTTPS environments
         path: "/",
-        domain: "https://localhost:3000",
+        domain: "localhost", // Remove the protocol part
         ...expiry,
       })
       .json({
