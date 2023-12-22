@@ -49,7 +49,7 @@ app.use(passport.initialize());
 
 app.use(
   cors({
-    origin: "https://social-media-plateform.vercel.app/",
+    origin: "https://social-media-plateform.vercel.app",
     credentials: true,
   })
 );
