@@ -54,6 +54,10 @@ app.use(
   })
 );
 
+// for trust the proxy causes error not setting cookies beacuse render provide a public domain
+
+app.set("trust proxy", 1);
+
 // ------------------------------
 
 // routes
