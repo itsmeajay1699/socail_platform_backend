@@ -48,6 +48,9 @@ authRouter.post("/login", async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
+        secure: true, // Set for HTTPS environments
+        path: "/",
+        domain: "https://localhost:3000",
         ...expiry,
       })
       .json({
@@ -107,6 +110,9 @@ authRouter.post("/register", async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
+        secure: true, // Set for HTTPS environments
+        path: "/",
+        domain: "https://localhost:3000",
         ...expiry,
       })
       .json({
@@ -153,7 +159,7 @@ authRouter.get(
 );
 
 authRouter.get("/logout", (req, res) => {
-  console.log(res)
+  console.log(res);
   res.clearCookie("token");
   res.status(200).json({ error: false, message: "Logged out" });
 });
