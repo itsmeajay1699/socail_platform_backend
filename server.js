@@ -39,9 +39,9 @@ const server = http.createServer(app);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
 
-sequelize.sync({ force: true }).then(() => {
-  console.log("Database & tables created!");
-});
+// sequelize.sync({ force: true }).then(() => {
+//   console.log("Database & tables created!");
+// });
 
 // passport middleware
 
