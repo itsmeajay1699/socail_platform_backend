@@ -15,15 +15,26 @@ const pool = {
   idle: 30000,
 };
 
-const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
-  host: HOST,
-  dialect,
-  pool,
+// const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
+//   host: "postgres://root:TP1QxrKIIx75lN1Cjk42yvRTibF9iyI0@dpg-cm0sjpmd3nmc73fkg5o0-a.singapore-postgres.render.com/social_media_postgres_database",
+//   dialect,
+//   pool,
+//   logging: false,
+//   benchmark: true,
+//   define: {
+//     paranoid: true,
+//     timestamp: true,
+//   },
+// });
+
+const sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: "postgres",
   logging: false,
-  benchmark: true,
-  define: {
-    paranoid: true,
-    timestamp: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
   },
 });
 

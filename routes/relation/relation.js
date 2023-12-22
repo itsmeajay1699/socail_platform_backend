@@ -2,6 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import FriendRequest from "../../model/schema/relations/FriendRequest.js";
 import User from "../../model/schema/accounts/User.js";
+import { Sequelize } from "../../model/index.js";
 const relationRouter = Router();
 
 relationRouter.get("/", async (req, res) => {
@@ -15,7 +16,26 @@ relationRouter.post(
     try {
       const sender_id = req.user.id;
       const { receiver_id } = req.body;
-      console.log(sender_id, receiver_id);
+      // console.log(sender_id, receiver_id,"hello world");
+
+      const find = await FriendRequest.findOne({
+        where: {
+          [Sequelize.Op.or]: [
+            { sender_id, receiver_id },
+            { sender_id: receiver_id, receiver_id: sender_id },
+          ],
+        },
+      });
+
+      console.log(find, "hello world");
+
+      if (find) {
+        return res.send({
+          error: true,
+          message: "Friend request already sent",
+        });
+      }
+
       const friendRequest = await FriendRequest.findOrCreate({
         where: {
           sender_id,
@@ -51,7 +71,14 @@ relationRouter.patch("/update", async (req, res) => {
       },
     });
     if (status === 2) {
-      await friendRequest.destroy();
+      await friendRequest.destroy(
+        {
+          where: {
+            id,
+          },
+        },
+        { force: true } //
+      );
       return res.send({
         error: false,
         message: "Friend request deleted",

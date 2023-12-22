@@ -20,20 +20,28 @@ import cookieParser from "cookie-parser";
 
 import PublicPost from "./model/schema/media/PublicPost.js";
 
+import Story from "./model/schema/media/Story.js";
+
 import "./auth/passport_jwt.js";
 
 import cors from "cors";
+
+import { setupWebSocketServer } from "./websocket/ws.js";
+
+import http from "http";
 
 config();
 
 const app = express();
 
+const server = http.createServer(app);
+
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
 
-// sequelize.sync({ force: true }).then(() => {
-//   console.log("Database & tables created!");
-// });
+sequelize.sync({ force: true }).then(() => {
+  console.log("Database & tables created!");
+});
 
 // passport middleware
 
@@ -41,7 +49,7 @@ app.use(passport.initialize());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true,
   })
 );
@@ -55,6 +63,8 @@ app.get("/", function (req, res) {
 
 app.use("/api/v1", index);
 
-app.listen(8080, () => {
-  console.log("server is running on port http://localhost:3000");
+server.listen(8080, () => {
+  console.log("Server is running on port 8080");
 });
+
+setupWebSocketServer(server);
