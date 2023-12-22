@@ -32,7 +32,7 @@ authRouter.post("/login", async (req, res) => {
 
     // Use bcrypt to compare passwords securely
     // Assuming user.password contains the hashed password
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = user.password === password;
 
     if (!passwordMatch) {
       return res.status(401).json({ error: true, message: "Invalid password" });
@@ -53,6 +53,7 @@ authRouter.post("/login", async (req, res) => {
     });
 
     console.log("Token set in cookie:", token);
+  
 
     return res.status(200).json({
       error: false,
