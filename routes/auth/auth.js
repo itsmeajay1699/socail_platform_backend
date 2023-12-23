@@ -44,22 +44,22 @@ authRouter.post("/login", async (req, res) => {
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
       : {};
 
-      res.cookie("token", token, {
+    return res
+      .status(202)
+      .cookie("token", token, {
         httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        signed: true,
         path: "/",
         ...expiry,
+      })
+      .json({
+        error: false,
+        user: user,
+        token: token,
+        message: "Login successful",
       });
-  
-
-    console.log("Token set in cookie:", token);
-  
-
-    return res.status(200).json({
-      error: false,
-      user: user,
-      token: token,
-      message: "Login successful",
-    });
   } catch (err) {
     console.error("Error in login:", err);
     return res.status(500).json({ error: true, message: err.message });
@@ -157,12 +157,12 @@ authRouter.post("/register", async (req, res) => {
       : {};
 
     return res
-      .status(200)
+      .status(202)
       .cookie("token", token, {
         httpOnly: true,
-        secure: true, // Set for HTTPS environments
-        path: "/",
-        domain: "localhost", // Remove the protocol part
+        sameSite: "lax",
+        secure: false,
+        signed: true,
         ...expiry,
       })
       .json({
