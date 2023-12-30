@@ -52,15 +52,12 @@ authRouter.post("/login", async (req, res) => {
     //   }
     // });
 
-    console.log(token, "y hai token");
-
     return res
       .status(200)
       .cookie("token", token, {
         httpOnly: false,
         secure: true, // Set for HTTPS environments
         path: "/",
-        // domain: "localhost", // Remove the protocol part
         domain: "social-media-plateform.vercel.app",
         sameSite: "none",
         ...expiry,
