@@ -55,11 +55,13 @@ authRouter.post("/login", async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
-        httpOnly: false,
+        // not able to set the cookie in the browser after deployment on vercel but it is working fine in localhost and postman
+        httpOnly: true,
         secure: true, // Set for HTTPS environments
         path: "/",
-        domain: "social-media-plateform.vercel.app",
+        domain: ".vercel.app",
         sameSite: "none",
+
         ...expiry,
       })
       .json({
