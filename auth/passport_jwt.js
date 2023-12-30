@@ -8,7 +8,7 @@ const cookieExtractor = (req) => {
 
 const tokenFromHeaderAuthorization = (req) => {
   const authorization = req?.headers?.authorization;
-  console.log(authorization);
+  console.log(authorization,"hello world");
   if (authorization) {
     const token = authorization.split(" ")[1];
     return token;

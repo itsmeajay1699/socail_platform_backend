@@ -22,6 +22,10 @@ import PublicPost from "./model/schema/media/PublicPost.js";
 
 import Story from "./model/schema/media/Story.js";
 
+import ChatRoom from "./model/schema/chat/ChatRoom.js";
+
+import Messages from "./model/schema/chat/Message.js";
+
 import "./auth/passport_jwt.js";
 
 import cors from "cors";
@@ -39,20 +43,36 @@ const server = http.createServer(app);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
 
-// sequelize.sync({ force: true }).then(() => {
-//   console.log("Database & tables created!");
-// });
+sequelize.sync({ alter: true }).then(() => {
+  console.log("Database & tables created!");
+});
 
 // passport middleware
 
 app.use(passport.initialize());
 
-app.use(
-  cors({
-    origin: "https://social-media-plateform.vercel.app",
-    credentials: true,
-  })
-);
+// production
+// app.use(
+//   cors({
+//     origin: "https://social-media-plateform.vercel.app",
+//     credentials: true,
+//   })
+// );
+
+// development
+
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "https://social-media-plateform.vercel.app",
+  ],
+  // You can add more options as needed
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"], // Specify the allowed HTTP methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // for trust the proxy causes error not setting cookies beacuse render provide a public domain
 

@@ -27,7 +27,9 @@ authRouter.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ error: true, message: "Invalid email" });
+      return res
+        .status(401)
+        .json({ error: true, message: "user does not exit with this email" });
     }
 
     // Use bcrypt to compare passwords securely
@@ -44,14 +46,23 @@ authRouter.post("/login", async (req, res) => {
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
       : {};
 
+    // req.session.save((err) => {
+    //   if (err) {
+    //     console.log(err);
+    //   }
+    // });
+
+    console.log(token, "y hai token");
+
     return res
-      .status(202)
+      .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        signed: true,
+        secure: true, // Set for HTTPS environments
         path: "/",
+        // domain: "localhost", // Remove the protocol part
+        domain: "social-media-plateform.vercel.app",
+        sameSite: "none",
         ...expiry,
       })
       .json({
@@ -156,13 +167,30 @@ authRouter.post("/register", async (req, res) => {
       ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
       : {};
 
+    // return res
+    //   .status(200)
+    //   .cookie("token", token, {
+    //     httpOnly: true,
+    //     secure: false,
+    //     signed: true,
+    //     ...expiry,
+    //   })
+    //   .json({
+    //     error: false,
+    //     user: user,
+    //     token: token,
+    //     message: "Login successful",
+    //   });
+
     return res
-      .status(202)
+      .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        signed: true,
+        secure: true, // Set for HTTPS environments
+        path: "/",
+        // domain: "localhost", // Remove the protocol part
+        domain: "social-media-plateform.vercel.app",
+        sameSite: "none",
         ...expiry,
       })
       .json({

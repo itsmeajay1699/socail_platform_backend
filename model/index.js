@@ -15,8 +15,8 @@ const pool = {
   idle: 30000,
 };
 
-// const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
-//   host: "postgres://root:TP1QxrKIIx75lN1Cjk42yvRTibF9iyI0@dpg-cm0sjpmd3nmc73fkg5o0-a.singapore-postgres.render.com/social_media_postgres_database",
+// const sequelize = new Sequelize("social_media", "postgres", "asklqwopn@1", {
+//   host: "localhost",
 //   dialect,
 //   pool,
 //   logging: false,
