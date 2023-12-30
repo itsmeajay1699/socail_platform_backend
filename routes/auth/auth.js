@@ -59,9 +59,6 @@ authRouter.post("/login", async (req, res) => {
         httpOnly: true,
         secure: true, // Set for HTTPS environments
         path: "/",
-        domain: ".vercel.app",
-        sameSite: "none",
-
         ...expiry,
       })
       .json({
