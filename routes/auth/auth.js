@@ -57,7 +57,7 @@ authRouter.post("/login", async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: true, // Set for HTTPS environments
         path: "/",
         // domain: "localhost", // Remove the protocol part

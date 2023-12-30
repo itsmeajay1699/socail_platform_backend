@@ -10,6 +10,8 @@ const { default: index } = await import("./routes/index.js");
 
 import passport from "passport";
 
+import session from "express-session";
+
 import User from "./model/schema/accounts/User.js";
 
 import FriendRequest from "./model/schema/relations/FriendRequest.js";
@@ -77,6 +79,21 @@ app.use(cors(corsOptions));
 // for trust the proxy causes error not setting cookies beacuse render provide a public domain
 
 app.set("trust proxy", 1);
+
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+    proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
+    name: "MyCoolWebAppCookieNameitsmeAjayhelloworld", // This needs to be unique per-host.
+    cookie: {
+      secure: true, // required for cookies to work on HTTPS
+      httpOnly: false,
+      sameSite: "none",
+    },
+  })
+);
 
 // ------------------------------
 
