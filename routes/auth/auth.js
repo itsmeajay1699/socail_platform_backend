@@ -57,6 +57,7 @@ authRouter.post("/login", async (req, res) => {
       .cookie("token", token, {
         path: "/",
         ...expiry,
+        domain:'social-media-plateform.vercel.app',
       })
       .json({
         error: false,
