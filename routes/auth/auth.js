@@ -43,7 +43,7 @@ authRouter.post("/login", async (req, res) => {
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
     const expiry = req.body?.remember
-      ? { maxAge: 1000 * 60 * 60 * 24 * 2 }
+      ? { maxAge: 1000 * 60 * 60 * 24 * 2 } 
       : {};
 
     // req.session.save((err) => {
@@ -57,7 +57,7 @@ authRouter.post("/login", async (req, res) => {
       .cookie("token", token, {
         path: "/",
         ...expiry,
-        domain:'social-media-plateform.vercel.app',
+        domain: "social-media-plateform.vercel.app",
       })
       .json({
         error: false,

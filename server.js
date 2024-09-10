@@ -25,6 +25,7 @@ import Story from "./model/schema/media/Story.js";
 import ChatRoom from "./model/schema/chat/ChatRoom.js";
 
 import Messages from "./model/schema/chat/Message.js";
+import "./utils/node-cron/cron.js";
 
 import "./auth/passport_jwt.js";
 
@@ -43,9 +44,9 @@ const server = http.createServer(app);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(bodyParser.json());
 
-sequelize.sync({ alter: true }).then(() => {
-  console.log("Database & tables created!");
-});
+// sequelize.sync({ alter: true }).then(() => {
+//   console.log("Database & tables created!");
+// });
 
 // passport middleware
 
